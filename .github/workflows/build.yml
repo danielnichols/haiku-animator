@@ -13,3 +13,18 @@ jobs:
       - name: Install git and python
         run: |
           choco install git python2 -y 
+      - name: Install nodejs
+        run: |
+          choco install nodejs-lts -y --version 8.15.1
+      - name: Install yarn
+        run: |
+          choco install yarn -y --version 1.13.0  --ignore-dependencies
+      - name: Update env
+        run: |
+          refreshenv
+      - name: Install build tools
+        run: |
+          npm install -g windows-build-tools@2.3.0
+      - name: Install build tools
+        run: |
+          yarn install && yarn setup
