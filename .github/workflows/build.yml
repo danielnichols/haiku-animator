@@ -15,7 +15,7 @@ jobs:
           choco install git python2 -y 
       - name: Install nodejs
         run: |
-          choco install nodejs-lts -y --version 8.15.1
+          choco install nodejs-lts -y --version 8.15.1 --force
       - name: Install yarn
         run: |
           choco install yarn -y --version 1.13.0  --ignore-dependencies
