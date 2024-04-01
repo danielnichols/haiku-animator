@@ -1,21 +1,20 @@
 name: Build Release
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
   workflow_dispatch:
 jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Install git and python
-        run: |
-          choco install git python2 -y 
-      - name: Install nodejs
-        run: |
-          choco install nodejs-lts -y --version 8.15.1 --force
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+          cache: 'pip'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '8.15'
+          cache: 'yarn'
       - name: Install yarn
         run: |
           choco install yarn -y --version 1.13.0  --ignore-dependencies
@@ -25,6 +24,19 @@ jobs:
       - name: Install build tools
         run: |
           npm install -g windows-build-tools@2.3.0
-      - name: Install build tools
+      - name: Install deps
         run: |
           yarn install && yarn setup
+      - name: Distro Configure
+        run: |
+          node ./scripts/distro-configure.js --non-interactive
+      - name: Distro Prepare
+        run: |
+          node ./scripts/distro-prepare.js
+      - name: Distro Build
+        run: |
+          node ./scripts/distro-build.js
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: ./dist
