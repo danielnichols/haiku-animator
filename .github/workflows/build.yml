@@ -7,46 +7,56 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Install Python
         continue-on-error: true
         run: |
           choco install python -y
-      # - uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.x'
-      #     cache: 'pip'
-      - uses: actions/setup-node@v4
+
+      - name: Install Node
         continue-on-error: true
-        with:
-          node-version: '8.15'
-          cache: 'yarn'
-      - name: Install yarn
+        run: |
+          choco install nodejs-lts -y --version 8.15.1
+
+      - name: Install Yarn
         continue-on-error: true
         run: |
           choco install yarn -y --version 1.13.0  --ignore-dependencies
+
       - name: Update env
         continue-on-error: true
         run: |
           refreshenv
+
       - name: Install build tools
         continue-on-error: true
         run: |
           npm install -g windows-build-tools@2.3.0
+
       - name: Install deps
         continue-on-error: true
         run: |
-          yarn install && yarn setup
+          yarn install
+
+      - name: Run Setup
+        continue-on-error: true
+        run: |
+          yarn setup
+
       - name: Distro Configure
         continue-on-error: true
         run: |
           node ./scripts/distro-configure.js --non-interactive
+
       - name: Distro Prepare
         continue-on-error: true
         run: |
           node ./scripts/distro-prepare.js
+
       - name: Distro Build
         run: |
           node ./scripts/distro-build.js
+
       - uses: actions/upload-artifact@v4
         with:
           name: dist
